@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+
+# Local development artifacts and agent/editor metadata
+.freebuff/
+walkthrough-*.png
+landing-*.png
