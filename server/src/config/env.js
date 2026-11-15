@@ -52,16 +52,23 @@ const environmentSchema = z
         .default("http://localhost:5173"),
     ),
     COOKIE_SAME_SITE: z.enum(["lax", "strict", "none"]).default("lax"),
-    MONGODB_URI: z
-      .string()
-      .min(1)
-      .default("mongodb://127.0.0.1:27017/courseit_clone"),
+    MONGODB_URI: z.string().trim().optional(),
     JWT_SECRET: z.string().min(32, "must be at least 32 characters"),
     YOUTUBE_API_KEY: z.string().trim().default(""),
     GEMINI_API_KEY: z.string().trim().default(""),
     GEMINI_MODEL: z.string().trim().min(1).max(100).default("gemini-2.5-flash"),
   })
   .superRefine((config, context) => {
+    if (
+      !config.MONGODB_URI &&
+      (config.NODE_ENV === "production" || config.MONGODB_URI !== undefined)
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["MONGODB_URI"],
+        message: "must be non-empty; set MONGODB_URI on the API service",
+      });
+    }
     if (config.COOKIE_SAME_SITE === "none" && config.NODE_ENV !== "production") {
       context.addIssue({
         code: "custom",
@@ -103,7 +110,7 @@ export function loadConfig(source = process.env) {
       result.data.NODE_ENV,
     ),
     cookieSameSite: result.data.COOKIE_SAME_SITE,
-    mongoUri: result.data.MONGODB_URI,
+    mongoUri: result.data.MONGODB_URI ?? "mongodb://127.0.0.1:27017/courseit_clone",
     jwtSecret: result.data.JWT_SECRET,
     youtubeApiKey: result.data.YOUTUBE_API_KEY || undefined,
     geminiApiKey: result.data.GEMINI_API_KEY || undefined,

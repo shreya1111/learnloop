@@ -209,6 +209,7 @@ test("normalizes client origins pasted into deployment settings", () => {
   const config = (origin) =>
     loadConfig({
       NODE_ENV: "production",
+      MONGODB_URI: "mongodb://mongo.example.test/courseit_clone",
       CLIENT_ORIGIN: origin,
       JWT_SECRET: secret,
     });
@@ -237,6 +238,7 @@ test("requires secure production mode for cross-site cookies", () => {
     () =>
       loadConfig({
         NODE_ENV: "production",
+        MONGODB_URI: "mongodb://mongo.example.test/courseit_clone",
         CLIENT_ORIGIN: "http://learnloop.example.com",
         JWT_SECRET: "test-secret-with-more-than-thirty-two-characters",
       }),
@@ -245,6 +247,7 @@ test("requires secure production mode for cross-site cookies", () => {
   assert.equal(
     loadConfig({
       NODE_ENV: "production",
+      MONGODB_URI: "mongodb://mongo.example.test/courseit_clone",
       CLIENT_ORIGIN: "https://learnloop.example.com",
       JWT_SECRET: "test-secret-with-more-than-thirty-two-characters",
     }).clientOrigin,
@@ -254,6 +257,7 @@ test("requires secure production mode for cross-site cookies", () => {
   let cookieOptions;
   const productionConfig = loadConfig({
     NODE_ENV: "production",
+    MONGODB_URI: "mongodb://mongo.example.test/courseit_clone",
     CLIENT_ORIGIN: "https://learnloop.example.com",
     JWT_SECRET: "test-secret-with-more-than-thirty-two-characters",
   });
